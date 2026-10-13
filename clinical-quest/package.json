@@ -1,0 +1,27 @@
+{
+  "name": "clinical-quest",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npm run db:migrate:local && wrangler dev",
+    "deploy": "npm run check:logic && wrangler deploy",
+    "db:migrate:local": "wrangler d1 migrations apply clinical-quest-db --local",
+    "db:migrate:remote": "wrangler d1 migrations apply clinical-quest-db --remote",
+    "set-domain": "node scripts/set-domain.mjs",
+    "check:logic": "node scripts/check-logic.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "npm run check:logic && vitest run"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "0.20.1",
+    "@cloudflare/workers-types": "5.20260804.1",
+    "typescript": "7.0.2",
+    "vitest": "4.1.10",
+    "wrangler": "4.118.0"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "stripe": "^23.0.0"
+  }
+}

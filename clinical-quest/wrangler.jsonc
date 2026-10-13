@@ -1,0 +1,44 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+
+  // The Worker's name in your Cloudflare account.
+  "name": "clinical-quest",
+  "main": "src/worker.ts",
+  "compatibility_date": "2025-05-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+
+  // Your domain. Set it with:  npm run set-domain -- yourdomain.com
+  // "routes": [{ "pattern": "yourdomain.com", "custom_domain": true }],
+
+  // Static files (the game screen, styles, images) are served first;
+  // /api/* and the /ws game socket fall through to the Worker.
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "not_found_handling": "none"
+  },
+
+  // Student accounts, sessions and subscriptions.
+  // Paste the database_id printed by:  npx wrangler d1 create clinical-quest-db
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "clinical-quest-db",
+      "database_id": "REPLACE_WITH_YOUR_D1_DATABASE_ID",
+      "migrations_dir": "migrations"
+    }
+  ],
+
+  // Non-secret settings. Secrets (Stripe, Resend) go in with `wrangler secret put`.
+  "vars": {
+    "APP_ORIGIN": "",
+    "BILLING_ENABLED": "false"
+  },
+
+  // One private room per student holds their game progress.
+  "durable_objects": {
+    "bindings": [{ "name": "ROOMS", "class_name": "Room" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Room"] }]
+}
